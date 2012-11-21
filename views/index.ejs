@@ -6,6 +6,15 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h3><%= subtitle %></h3>
+    <p>With this service you subscribe to a feed, then each hour(60 minutes), we check if there is new info on the feed and let you know via POST to an url the new stuff avaliable on that feed, if you need to check information more often plz contact us</p>
+    <form action="/" method="POST">
+      <label for="feed">Feed you are subscribing to</label>
+      <input type="text" name="feed" id="feed" autocomplete="off" placeholder="http://github.com/timeline.atom">
+      <label for="callback">Where do you want to be notified</label>
+      <input type="text" name="callback" id="callback" autocomplete="off" placeholder="http://requestb.in/1dgsd5m1">
+      <input type="submit" value="Subscribe">
+    </form>
+    <p><% if (locals.notice) { %> <%= notice %> <% } %></p>
   </body>
 </html>

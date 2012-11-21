@@ -10,6 +10,8 @@
     "ejs": "*",
     "less-middleware": "*",
     "redis": "~0.8.2",
-    "request": "~2.12.0"
+    "request": "~2.12.0",
+    "kue": "git://github.com/LearnBoost/kue.git",
+    "feedparser": "~0.10.8"
   }
 }
