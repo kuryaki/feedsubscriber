@@ -52,17 +52,12 @@ var broadcast_feed = function(articles, last_updated, subscribers){
 
   var updated = new Date(Date.parse(last_updated));
 
-  var new_articles = [];
   for(i=articles.length-1;i>=0;i--){
     var article_date = new Date(Date.parse(articles[i].pubDate));
     if(article_date > updated){
-      new_articles.push(articles[i]);
+      request.defaults({body:articles[i]}).post(subscriber, {json:true});
     }
   }
-  subscribers.map(function(subscriber){
-    console.log(subscriber);
-    console.log(new_articles.length);
-  });
 };
 
 
@@ -83,7 +78,9 @@ jobs.process('feed', function(job, done){
           });
         }else{
           client.lrange(job.data.url+'_subscribers', 0, 1, function(error, subscribers){
-            broadcast_feed(articles, last_updated, subscribers);
+            if(subscribers){
+              broadcast_feed(articles, last_updated, subscribers);
+            }else{done(error);}
           });
           jobs.create('feed', job.data).delay(minute).save();
           client.set(job.data.url, articles[0].pubDate);
