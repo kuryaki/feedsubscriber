@@ -1,5 +1,10 @@
 var kue = require('kue');
+
 var request = require('request');
+
+var redis = require('redis')
+  , client = redis.createClient();
+
 var minute = 10000;
 /*
  * GET home page.
@@ -13,16 +18,32 @@ exports.index = function(req, res){
 };
 
 exports.feed = function(req, response){
+  var feed = req.body.feed;
+  var subscriber = req.body.callback;
+
   var data = {
        type: 'feed',
        data: {
-         title: ' subscription to ' + req.body.feed,
-         url: req.body.feed
-       },
-       options: {
-          _delay: minute
+         title: ' subscription to ' + feed,
+         url: feed
        }
      };
+
+  client.lrange(feed + '_subscribers', 0, -1, function(err, data){
+    var notInData = true;
+
+    for(i in data){
+      if(data[i] === subscriber){
+        notInData = false;
+      }
+    }
+
+    if(notInData){
+      client.lpush(feed+ '_subscribers', subscriber);
+    }
+
+  });
+
 
   request
     .defaults({body:data})

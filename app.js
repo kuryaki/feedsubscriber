@@ -7,9 +7,11 @@ var kue = require('kue')
   , feedparser = require('feedparser');
 
 kue.redis.createClient = function() {
-  var client = redis.createClient(6379, '127.0.0.1');//change this to production data
+  var client = redis.createClient(6379, '127.0.0.1'); //TODO change for production
   return client;
 };
+
+var client = kue.redis.createClient();
 
 var jobs = kue.createQueue();
 var minute = 10000;
@@ -18,6 +20,8 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path');
+
+var request = require('request');
 
 var app = express();
 
@@ -44,22 +48,57 @@ app.get('/', routes.index);
 
 app.post('/', routes.feed);
 
+var update_feed = function(articles, last_updated){
+  var last_updated = new Date(Date.parse(last_updated));
+  for(i=articles.length-1;i>=0;i--){
+    var article_date = new Date(Date.parse(articles[i].pubDate));
+    if(article_date > last_updated){
+      console.log('New Article');
+      console.log(articles[i]);
+    }
+  }
+
+  // if(error){done(error);}
+
+  // console.log(article.pubDate);
+
+  // client.lrange(job.data.url+'_subscribers', 0, -1, function(error, data){
+
+  //   if(error){done(error);}
+  //   //
+  //   done();
+  // });
+};
+
+
 jobs.promote();
 
 jobs.process('feed', function(job, done){
   try {//this could fly if i validate the url via middleware/client
-    parser = feedparser.parseUrl(job.data.url, {addmeta:false}, function(error, feed){
-      if(error){
-        done(error);
-      }
-      console.log(feed.date);
-      jobs.create('feed', job.data).delay(minute).save();
-      done();
+    feedparser.parseUrl(job.data.url, function(error, meta, articles){
+
+      client.get(job.data.url, function(error, last_updated){
+        if(error){done(error);}
+
+        if(!last_updated){ //Set the latest
+          client.set(job.data.url, articles[0].pubDate, function(error, data){
+            if(error){done(error);}
+            jobs.create('feed', job.data).delay(minute).save();
+            done();
+          });
+        }else{
+          update_feed(articles, last_updated);
+          jobs.create('feed', job.data).delay(minute).save();
+          done();
+        }
+
+      });
     });
   }catch(err){
     done(err);
   }
 });
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
