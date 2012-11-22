@@ -55,7 +55,9 @@ var broadcast_feed = function(articles, last_updated, subscribers){
   for(i=articles.length-1;i>=0;i--){
     var article_date = new Date(Date.parse(articles[i].pubDate));
     if(article_date > updated){
-      request.defaults({body:articles[i]}).post(subscriber, {json:true});
+      subscribers.map(function(subscriber){
+        request.defaults({body:articles[i]}).post(subscriber, {json:true});
+      });
     }
   }
 };
