@@ -48,26 +48,21 @@ app.get('/', routes.index);
 
 app.post('/', routes.feed);
 
-var update_feed = function(articles, last_updated){
-  var last_updated = new Date(Date.parse(last_updated));
+var broadcast_feed = function(articles, last_updated, subscribers){
+
+  var updated = new Date(Date.parse(last_updated));
+
+  var new_articles = [];
   for(i=articles.length-1;i>=0;i--){
     var article_date = new Date(Date.parse(articles[i].pubDate));
-    if(article_date > last_updated){
-      console.log('New Article');
-      console.log(articles[i]);
+    if(article_date > updated){
+      new_articles.push(articles[i]);
     }
   }
-
-  // if(error){done(error);}
-
-  // console.log(article.pubDate);
-
-  // client.lrange(job.data.url+'_subscribers', 0, -1, function(error, data){
-
-  //   if(error){done(error);}
-  //   //
-  //   done();
-  // });
+  subscribers.map(function(subscriber){
+    console.log(subscriber);
+    console.log(new_articles.length);
+  });
 };
 
 
@@ -87,8 +82,11 @@ jobs.process('feed', function(job, done){
             done();
           });
         }else{
-          update_feed(articles, last_updated);
+          client.lrange(job.data.url+'_subscribers', 0, 1, function(error, subscribers){
+            broadcast_feed(articles, last_updated, subscribers);
+          });
           jobs.create('feed', job.data).delay(minute).save();
+          client.set(job.data.url, articles[0].pubDate);
           done();
         }
 
