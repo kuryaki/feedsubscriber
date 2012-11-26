@@ -1,9 +1,9 @@
 {
   "name": "feedsubscriber",
-  "version": "0.0.1",
+  "version": "0.0.1-10",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "3.0.0rc3",
@@ -13,5 +13,9 @@
     "request": "~2.12.0",
     "kue": "git://github.com/LearnBoost/kue.git",
     "feedparser": "~0.10.8"
+  },
+  "subdomain": "feedscriber",
+  "engines": {
+    "node": "0.8.x"
   }
 }

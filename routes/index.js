@@ -1,11 +1,14 @@
 var kue = require('kue');
-
+var config = require('../config');
 var request = require('request');
 
-var redis = require('redis')
-  , client = redis.createClient();
+var redis = require('redis');
+var client = redis.createClient(config.db.port, config.db.host);
+if(config.db.auth){
+  client.auth(config.db.auth);
+}
 
-var minute = 10000;
+var minute = 60000;
 /*
  * GET home page.
  */

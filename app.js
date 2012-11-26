@@ -1,25 +1,32 @@
-
 /**
  * Module dependencies.
  */
-var kue = require('kue')
-  , redis = require('redis')
-  , feedparser = require('feedparser');
+var kue = require('kue');
+var redis = require('redis');
+var feedparser = require('feedparser');
+
+var config = require('./config');
 
 kue.redis.createClient = function() {
-  var client = redis.createClient(6379, '127.0.0.1'); //TODO change for production
+  var client = redis.createClient(config.db.port, config.db.host);
+  if(config.db.auth){
+    client.auth(config.db.auth);
+  }
   return client;
 };
 
-var client = kue.redis.createClient();
+var client = redis.createClient(config.db.port, config.db.host);
+if(config.db.auth){
+  client.auth(config.db.auth);
+}
 
 var jobs = kue.createQueue();
 var minute = 10000;
 
-var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path');
+var express = require('express');
+var routes = require('./routes');
+var http = require('http');
+var path = require('path');
 
 var request = require('request');
 
