@@ -2,3 +2,10 @@
 
 This project subscribes to a feed to a post url so that every once in a while if a new
 article is in the feed it get posted to the url
+
+## TODO
+
+* Add unsubscribe
+* Add some pretty first page (just bootstrap it)
+* Make it like an API
+* Document the way to subscribe with an API

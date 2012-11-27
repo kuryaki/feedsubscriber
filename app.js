@@ -21,7 +21,7 @@ if(config.db.auth){
 }
 
 var jobs = kue.createQueue();
-var minute = 10000;
+var minute = 5000;
 
 var express = require('express');
 var routes = require('./routes');
@@ -52,7 +52,6 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-
 app.post('/', routes.feed);
 
 var broadcast_feed = function(articles, last_updated, subscribers){
@@ -76,8 +75,11 @@ jobs.process('feed', function(job, done){
   try {//this could fly if i validate the url via middleware/client
     feedparser.parseUrl(job.data.url, function(error, meta, articles){
 
+      if(error){done(error);}
+
       client.get(job.data.url, function(error, last_updated){
         if(error){done(error);}
+        console.log(articles[0].pubDate);
 
         if(!last_updated){ //Set the latest
           client.set(job.data.url, articles[0].pubDate, function(error, data){

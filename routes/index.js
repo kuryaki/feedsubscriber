@@ -24,7 +24,7 @@ exports.feed = function(req, response){
   var feed = req.body.feed;
   var subscriber = req.body.callback;
 
-  var data = {
+  var job = {
        type: 'feed',
        data: {
          title: ' subscription to ' + feed,
@@ -32,30 +32,38 @@ exports.feed = function(req, response){
        }
      };
 
-  client.lrange(feed + '_subscribers', 0, -1, function(err, data){
+  client.lrange(feed + '_subscribers', 0, -1, function(error, data){
     var notInData = true;
 
-    for(i in data){
-      if(data[i] === subscriber){
-        notInData = false;
-      }
-    }
+    if(error){
+      response.send(error);
+    }else{
 
-    if(notInData){
-      client.lpush(feed+ '_subscribers', subscriber);
+      for(var i in data){
+        if(data[i] === subscriber){
+          notInData = false;
+          break;
+        }
+      }
+
+      if(notInData && subscriber){
+        client.lpush(feed+'_subscribers', subscriber);
+      }
+
+      request
+        .defaults({body:job})
+        .post(config.appurl+'/job', {json:true}, function(err, res, body){
+          response.render('index', {
+            title: 'Subscribe to a feed',
+            subtitle: 'The alternative to pubsubhubsub',
+            notice: req.body.callback + ' subscribed to ' + req.body.feed  + ' -> ' + res.body.message
+          });
+        });
+
     }
 
   });
 
 
-  request
-    .defaults({body:data})
-    .post('http://localhost:3000/job', {json:true}, function(err, res, body){ //TODO change for production
-      response.render('index', {
-        title: 'Subscribe to a feed',
-        subtitle: 'The alternative to pubsubhubsub',
-        notice: req.body.callback + ' subscribed to ' + req.body.feed  + ' -> ' + res.body.message
-      });
-    });
 
 };
