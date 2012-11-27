@@ -21,7 +21,7 @@ if(config.db.auth){
 }
 
 var jobs = kue.createQueue();
-var minute = 5000;
+var minute = 60000;
 
 var express = require('express');
 var routes = require('./routes');
@@ -79,7 +79,6 @@ jobs.process('feed', function(job, done){
 
       client.get(job.data.url, function(error, last_updated){
         if(error){done(error);}
-        console.log(articles[0].pubDate);
 
         if(!last_updated){ //Set the latest
           client.set(job.data.url, articles[0].pubDate, function(error, data){

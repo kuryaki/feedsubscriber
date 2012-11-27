@@ -8,7 +8,6 @@ if(config.db.auth){
   client.auth(config.db.auth);
 }
 
-var minute = 60000;
 /*
  * GET home page.
  */
