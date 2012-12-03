@@ -21,7 +21,7 @@ if(config.db.auth){
 }
 
 var jobs = kue.createQueue();
-var minute = 60000;
+var minute = 10000;
 
 var express = require('express');
 var routes = require('./routes');
@@ -58,10 +58,12 @@ var broadcast_feed = function(articles, last_updated, subscribers){
 
   var updated = new Date(Date.parse(last_updated));
 
+
   for(i=articles.length-1;i>=0;i--){
     var article_date = new Date(Date.parse(articles[i].pubDate));
     if(article_date > updated){
       subscribers.map(function(subscriber){
+        console.log('Emit new article to ' + subscriber);
         request.defaults({body:articles[i]}).post(subscriber, {json:true});
       });
     }
