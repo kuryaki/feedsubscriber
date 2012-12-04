@@ -62,10 +62,14 @@ var broadcast_feed = function(articles, last_updated, subscribers){
   for(i=articles.length-1;i>=0;i--){
     var article_date = new Date(Date.parse(articles[i].pubDate));
     if(article_date > updated){
-      subscribers.map(function(subscriber){
-        console.log(articles[i].author + ' emmited new article to ' + subscriber);
-        request.defaults({body:articles[i]}).post(subscriber, {json:true});
-      });
+      try{
+        subscribers.map(function(subscriber){
+          console.log(articles[i].author + ' emmited new article to ' + subscriber);
+          request.defaults({body:articles[i]}).post(subscriber, {json:true});
+        });
+      }catch(error){
+        console.log(error);
+      }
     }
   }
 };
