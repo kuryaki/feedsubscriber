@@ -63,7 +63,7 @@ var broadcast_feed = function(articles, last_updated, subscribers){
     var article_date = new Date(Date.parse(articles[i].pubDate));
     if(article_date > updated){
       subscribers.map(function(subscriber){
-        console.log('Emit new article to ' + subscriber);
+        console.log(article.author + ' emmited new article to ' + subscriber);
         request.defaults({body:articles[i]}).post(subscriber, {json:true});
       });
     }
@@ -82,7 +82,7 @@ jobs.process('feed', function(job, done){
       client.get(job.data.url, function(error, last_updated){
         if(error){done(error);}
 
-        if(!last_updated){ //Set the latest
+        if(!last_updated && articles){ //Set the latest
           client.set(job.data.url, articles[0].pubDate, function(error, data){
             if(error){done(error);}
             jobs.create('feed', job.data).delay(minute).save();

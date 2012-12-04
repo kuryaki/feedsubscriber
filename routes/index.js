@@ -13,6 +13,7 @@ if(config.db.auth){
  */
 
 exports.index = function(req, res){
+  console.log(req.headers.host);
   res.render('index', {
     title: 'Subscribe to a feed',
     subtitle: 'The alternative to pubsubhubsub'
