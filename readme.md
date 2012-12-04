@@ -7,5 +7,3 @@ article is in the feed it get posted to the url
 
 * Add unsubscribe
 * Add some pretty first page (just bootstrap it)
-* Make it like an API
-* Document the way to subscribe with an API
