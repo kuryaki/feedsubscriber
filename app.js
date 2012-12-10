@@ -69,8 +69,6 @@ var broadcast_feed = function(articles, last_updated, subscribers){
             subscriber,
             {json:true},
             function(error, response, body){
-              console.log(error);
-              console.log(response);
               console.log(body);
           });
         });
@@ -80,7 +78,6 @@ var broadcast_feed = function(articles, last_updated, subscribers){
     }
   }
 };
-
 
 jobs.promote();
 
