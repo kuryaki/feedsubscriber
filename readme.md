@@ -9,3 +9,4 @@ article is in the feed it get posted to the url
 * Add some pretty first page (just bootstrap it)
 * Log errors
 * check on valid atom/rss sources
+
