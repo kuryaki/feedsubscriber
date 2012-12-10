@@ -65,10 +65,17 @@ var broadcast_feed = function(articles, last_updated, subscribers){
       try{
         subscribers.map(function(subscriber){
           console.log(articles[i].author + ' emmited new article to ' + subscriber);
-          request.defaults({body:articles[i]}).post(subscriber, {json:true});
+          request.defaults({body:articles[i]}).post(
+            subscriber,
+            {json:true},
+            function(error, response, body){
+              console.log(error);
+              console.log(response);
+              console.log(body);
+          });
         });
       }catch(error){
-        console.log(error);
+        console.log(errorHandler);
       }
     }
   }
@@ -87,7 +94,6 @@ jobs.process('feed', function(job, done){
         if(error){done(error);}
 
         if(articles){
-          console.log('Parsing ' + articles.length + ' from ' + job.data.url);
           if(!last_updated){ //Set the latest
             client.set(job.data.url, articles[0].pubDate, function(error, data){
               if(error){done(error);}
