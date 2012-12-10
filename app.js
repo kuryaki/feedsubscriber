@@ -66,9 +66,7 @@ var broadcast_feed = function(articles, last_updated, subscribers){
         subscribers.map(function(subscriber){
           console.log(articles[i].author + ' emmited new article to ' + subscriber);
           request.defaults({body:articles[i]}).post(
-            subscriber,
-            {json:true},
-            function(error, response, body){
+            subscriber, {json:true}, function(error, response, body){
               console.log(body);
           });
         });
