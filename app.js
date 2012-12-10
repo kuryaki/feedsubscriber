@@ -102,7 +102,10 @@ jobs.process('feed', function(job, done){
             client.set(job.data.url, articles[0].pubDate);
             done();
           }
-        }else{done('No Articles O.o!');}
+        }else{
+          jobs.create('feed', job.data).delay(minute).save();
+          done('No Articles O.o!');
+        }
 
       });
     });
