@@ -89,7 +89,7 @@ jobs.process('feed', function(job, done){
           if(!last_updated){ //Set the latest
             client.set(job.data.url, articles[0].pubDate, function(error, data){
               if(error){done(error);}
-              jobs.create('feed', job.data).delay(minute/6).save();
+              jobs.create('feed', job.data).delay(minute).save();
               done();
             });
           }else{
@@ -98,12 +98,12 @@ jobs.process('feed', function(job, done){
                 broadcast_feed(articles, last_updated, subscribers);
               }else{done(error);}
             });
-            jobs.create('feed', job.data).delay(minute/6).save();
+            jobs.create('feed', job.data).delay(minute).save();
             client.set(job.data.url, articles[0].pubDate);
             done();
           }
         }else{
-          jobs.create('feed', job.data).delay(minute/6).save();
+          jobs.create('feed', job.data).delay(minute).save();
           done('No Articles O.o!');
         }
 
