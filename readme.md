@@ -5,7 +5,7 @@ article is in the feed it get posted to the url
 
 ## TODO
 
-* Add unsubscribe
+* Add unsubscribe 
 * Log errors
 * check on valid atom/rss sources
 * Add refresh time?
