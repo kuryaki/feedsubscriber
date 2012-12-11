@@ -75,7 +75,7 @@ var broadcast_feed = function(articles, last_updated, subscribers){
 };
 
 jobs.promote();
-//blablablabla
+
 jobs.process('feed', function(job, done){
   try {//this could fly if i validate the url via middleware/client
     feedparser.parseUrl(job.data.url, function(error, meta, articles){
