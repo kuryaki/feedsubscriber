@@ -65,7 +65,13 @@ var broadcast_feed = function(articles, last_updated, subscribers){
       try{
         subscribers.map(function(subscriber){
           console.log(articles[i].author + ' emmited new article to ' + subscriber);
-          request.defaults({body:articles[i]}).post(subscriber, {json:true});
+          request.defaults({body:articles[i]}).post(subscriber, {json:true},function(error, response, body){
+            if(response.headers.status!==200){
+              console.log(subscriber);
+              console.log(error);
+              console.log(body);
+            }
+          });
         });
       }catch(error){
         console.log(errorHandler);
